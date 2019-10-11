@@ -18,8 +18,11 @@ app.use(bodyParser.json());
 //Sets the root route to /todos, all others are based on this
 app.use('/todos', todoRoutes);
 
+//Set the mongo connection settings
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
+
 //Connect to the MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const connection = mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
