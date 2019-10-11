@@ -1,25 +1,25 @@
 //Dependencies
 const express = require('express');
-const cors = require('cors');
+//const cors = require('cors');
 const mongoose = require('mongoose');
 
 //todo Set up separate route file
 //Require the routes
 //const routes = require("./routes");
 
-// Initialize Express
-const app = express();
-
 //Require the mongo todo model
 let Todo = require('./models/todo.model');
 
-//Set the port
+//Set path and port
+const path = require("path");
 const PORT = process.env.PORT || 4000;
 
 // Define middleware here
+// Initialize Express
+const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+//app.use(cors());
 
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
@@ -100,6 +100,12 @@ todoRoutes.route('/update/:id').post(function(req, res) {
           });
   });
 });
+
+// Send every other request to the React app
+// Define any API routes before this runs
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./client/build/index.html"));
+  });  
 
 //Listen to the Port
 app.listen(PORT, function() {
