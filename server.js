@@ -1,7 +1,6 @@
 //Dependencies
 const express = require('express');
 const todoRoutes = express.Router();
-const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -13,24 +12,50 @@ const PORT = process.env.PORT || 4000;
 let Todo = require('./models/todo.model');
 
 //Middleware
+// Initialize Express
+const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-//Sets the root route to /todos, all others are based on this
-app.use('/todos', todoRoutes);
+
+
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
+}else {
+    // Make public a static folder
+    app.use(express.static('public'));
 }
 
+//Sets the root route to /todos, all others are based on this
+app.use('/todos', todoRoutes);
+
+//! Connect to the Mongo DB **********************************************
+// If deployed, use the deployed database. Otherwise use the local database
+const MONGODB_URI =
+  process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
+
+// Connect to the db
+mongoose.connect(MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
+
+
+
 //Set the mongo connection settings
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
+//const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
 
 //Connect to the MongoDB
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-const connection = mongoose.connection;
-connection.once('open', function() {
-    console.log("MongoDB database connection established successfully");
-})
+//mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+// const connection = mongoose.connection;
+// connection.once('open', function() {
+//     console.log("MongoDB database connection established successfully");
+// })
 
 
 //Routes
