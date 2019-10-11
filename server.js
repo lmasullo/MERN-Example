@@ -7,9 +7,9 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 //Set the port
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
-//Require the mongo model
+//Require the mongo todo model
 let Todo = require('./models/todo.model');
 
 //Middleware
