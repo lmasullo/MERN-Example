@@ -1,34 +1,48 @@
 //Dependencies
 const express = require('express');
-const todoRoutes = express.Router();
 const bodyParser = require('body-parser');
-const cors = require('cors');
+//const cors = require('cors');
 const mongoose = require('mongoose');
 
-//Set the port
-const PORT = process.env.PORT || 4000;
+//!Set up separate route file
+//Require the routes
+//const routes = require("./routes");
+
+// Initialize Express
+const app = express();
 
 //Require the mongo todo model
 let Todo = require('./models/todo.model');
 
-//Middleware
-// Initialize Express
-const app = express();
+//Set the port
+const PORT = process.env.PORT || 4000;
+
+// Define middleware here
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
+// Serve up static assets (usually on heroku)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
+
+
+// create application/x-www-form-urlencoded parser
+//app.use(express.urlencoded({ extended: true }));
 
 
 // Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static("client/build"));
-}else {
-    // Make public a static folder
-    app.use(express.static('public'));
-}
+//! Is this correct
+// if (process.env.NODE_ENV === "production") {
+//     app.use(express.static("client/build"));
+// }else {
+//     // Make public a static folder
+//     app.use(express.static('public'));
+// }
 
 //Sets the root route to /todos, all others are based on this
+const todoRoutes = express.Router();
 app.use('/todos', todoRoutes);
 
 //! Connect to the Mongo DB **********************************************
@@ -43,20 +57,11 @@ mongoose.connect(MONGODB_URI, {
   useFindAndModify: false,
 });
 
-
-
-//Set the mongo connection settings
-//const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
-
-//Connect to the MongoDB
-//mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-// const connection = mongoose.connection;
-// connection.once('open', function() {
-//     console.log("MongoDB database connection established successfully");
-// })
-
+//Display connection message
+const connection = mongoose.connection;
+connection.once('open', function() {
+    console.log("MongoDB database connection established successfully");
+})
 
 //Routes
 //Get all todos
@@ -111,7 +116,6 @@ todoRoutes.route('/update/:id').post(function(req, res) {
           });
   });
 });
-
 
 //Listen to the Port
 app.listen(PORT, function() {
