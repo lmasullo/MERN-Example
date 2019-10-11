@@ -17,6 +17,10 @@ app.use(cors());
 app.use(bodyParser.json());
 //Sets the root route to /todos, all others are based on this
 app.use('/todos', todoRoutes);
+// Serve up static assets (usually on heroku)
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static("client/build"));
+}
 
 //Set the mongo connection settings
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
