@@ -1,6 +1,5 @@
 //Dependencies
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
@@ -32,8 +31,7 @@ app.use('/todos', todoRoutes);
 
 //! Connect to the Mongo DB **********************************************
 // If deployed, use the deployed database. Otherwise use the local database
-const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/todos';
 
 // Connect to the db
 mongoose.connect(MONGODB_URI, {
