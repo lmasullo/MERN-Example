@@ -26,21 +26,6 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-
-
-// create application/x-www-form-urlencoded parser
-//app.use(express.urlencoded({ extended: true }));
-
-
-// Serve up static assets (usually on heroku)
-//! Is this correct
-// if (process.env.NODE_ENV === "production") {
-//     app.use(express.static("client/build"));
-// }else {
-//     // Make public a static folder
-//     app.use(express.static('public'));
-// }
-
 //Sets the root route to /todos, all others are based on this
 const todoRoutes = express.Router();
 app.use('/todos', todoRoutes);
